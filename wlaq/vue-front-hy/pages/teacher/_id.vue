@@ -26,19 +26,21 @@
 
             <section class="t-infor-pic">
 
-              <img src="~/assets/photo/teacher/1442297885942.jpg">
+              <img :src="teacher.avatar">
 
             </section>
 
             <h3 class="hLh30">
 
-              <span class="fsize24 c-333">姚晨&nbsp;高级讲师</span>
+              <span class="fsize24 c-333">{{teacher.name}}&nbsp;
+                  {{ teacher.level===1?'高级讲师':'首席讲师' }}
+              </span>
 
             </h3>
 
             <section class="mt10">
 
-              <span class="t-tag-bg">北京师范大学法学院副教授</span>
+              <span class="t-tag-bg">{{teacher.intro}}</span>
 
             </section>
 
@@ -48,7 +50,7 @@
 
                 class="mt20"
 
-              >北京师范大学法学院副教授、清华大学法学博士。自2004年至今已有9年的司法考试培训经验。长期从事司法考试辅导，深知命题规律，了解解题技巧。内容把握准确，授课重点明确，层次分明，调理清晰，将法条法理与案例有机融合，强调综合，深入浅出。</p>
+              >{{teacher.career}}</p>
 
             </section>
 
@@ -84,7 +86,7 @@
 
           <!-- /无数据提示 开始-->
 
-          <section class="no-data-wrap">
+          <section class="no-data-wrap" v-if="courseList.length==0">
 
             <em class="icon30 no-data-ico">&nbsp;</em>
 
@@ -98,13 +100,13 @@
 
             <ul class="of">
 
-              <li>
+              <li v-for="course in courseList" :key="course.id">
 
                 <div class="cc-l-wrap">
 
                   <section class="course-img">
 
-                    <img src="~/assets/photo/course/1442295455437.jpg" class="img-responsive" >
+                    <img :src="course.cover" class="img-responsive" >
 
                     <div class="cc-mask">
 
@@ -116,7 +118,7 @@
 
                   <h3 class="hLh30 txtOf mt10">
 
-                    <a href="#" title="零基础入门学习Python课程学习" target="_blank" class="course-title fsize18 c-333">零基础入门学习Python课程学习</a>
+                    <a href="#" :title="course.title" target="_blank" class="course-title fsize18 c-333">{{course.title}}</a>
 
                   </h3>
 
@@ -221,7 +223,18 @@
 </template>
 
 <script>
-
-export default {};
+import teacherApi from '@/api/teacher'
+export default {
+  //this.$route.params.id
+  asyncData({params,error}){
+    return teacherApi.getTeacherInfo(params.id)
+    .then(Response =>{
+      return{
+        teacher:Response.data.data.teacher,
+        courseList:Response.data.data.courseList
+      }
+    })
+  }
+};
 
 </script>

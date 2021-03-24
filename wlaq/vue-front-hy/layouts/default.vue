@@ -211,6 +211,7 @@ import "~/assets/css/global.css";
 
 import "~/assets/css/web.css";
 import cookie from 'js-cookie'
+import loginApi from '@/api/login'
 export default {
   data(){
     return {
@@ -226,9 +227,32 @@ export default {
     }
   },
   created(){
+      //获取路径里面token值
+      this.token = this.$route.query.token
+      console.log(this.token)
+      if(this.token){//判断路径是否有token值
+      this.wxLogin()
+
+      }
+
       this.showInfo()
   },
   methods:{
+    //微信登录显示的方法
+    wxLogin(){
+       //console.log('************'+this.token)
+      //把token值放到cookie里面
+      cookie.set('wlaq_token',this.token,{domain: 'localhost'})
+      cookie.set('wlaq_ucenter','',{domain: 'localhost'})
+      //console.log('===='+cookie.get('wlaq_token'))
+      //调用接口，根据token值获取用户信息
+      loginApi.getLoginUserInfo()
+      .then(Response =>{
+        //console.log('#########'+Response.data.data.userInfo)
+        this.loginInfo = Response.data.data.userInfo
+        cookie.set('wlaq_ucenter',this.loginInfo,{domain: 'localhost'})
+      })
+    },
    //创建方法，从cookie获取用户信息
    showInfo(){
     //从cookie获取用户信息
