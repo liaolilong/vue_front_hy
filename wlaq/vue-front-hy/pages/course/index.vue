@@ -38,9 +38,9 @@
 
                 </li>
 
-                <li v-for ="(item,index) in subjectNestedList" :key="index">
+                <li v-for ="(item,index) in subjectNestedList" :key="index" :class="{active:oneIndex==index}">
 
-                  <a title="数据库" href="#">{{item.title}}</a>
+                  <a :title="item.title" href="#" @click="searchOne(item.id,index)">{{item.title}}</a>
 
                 </li>
 
@@ -62,9 +62,9 @@
 
               <ul class="clearfix">
 
-                <li v-for="(item,index) in subSubjectList" :key="index">
+                <li v-for="(item,index) in subSubjectList" :key="index" :class="{active:twoIndex==index}">
 
-                  <a title="职称英语" href="#">{{item.title}}</a>
+                  <a :title="item.title" href="#" @click="searchTwo(item.id,index)">{{item.title}}</a>
 
                 </li>
 
@@ -96,27 +96,21 @@
 
             <ol class="js-tap clearfix">
 
-              <li>
-
-                <a title="关注度" href="#">关注度</a>
-
-              </li>
-
-              <li>
-
-                <a title="最新" href="#">最新</a>
-
-              </li>
-
-              <li class="current bg-orange">
-
-                <a title="价格" href="#">价格&nbsp;
-
-                  <span>↓</span>
-
-                </a>
-
-              </li>
+              <li :class="{'current bg-orange':buyCountSort!=''}">
+              <a title="销量" href="javascript:void(0);" @click="searchBuyCount()">销量
+              <span :class="{hide:buyCountSort==''}">↓</span>
+              </a>
+            </li>
+            <li :class="{'current bg-orange':gmtCreateSort!=''}">
+              <a title="最新" href="javascript:void(0);" @click="searchGmtCreate()">最新
+              <span :class="{hide:gmtCreateSort==''}">↓</span>
+              </a>
+            </li>
+            <li :class="{'current bg-orange':priceSort!=''}">
+              <a title="价格" href="javascript:void(0);" @click="searchPrice()">价格&nbsp;
+                <span :class="{hide:priceSort==''}">↓</span>
+              </a>
+            </li>
 
             </ol>
 
@@ -152,7 +146,7 @@
 
                     <div class="cc-mask">
 
-                      <a href="/course/1" title="开始学习" class="comm-btn c-btn-1">开始学习</a>
+                      <a :href="'/course/'+item.id" title="开始学习" class="comm-btn c-btn-1">开始学习</a>
 
                     </div>
 
@@ -160,7 +154,7 @@
 
                   <h3 class="hLh30 txtOf mt10">
 
-                    <a href="/course/1" :title="item.title" class="course-title fsize18 c-333">{{item.title}}</a>
+                    <a :href="'/course/'+item.id" :title="item.title" class="course-title fsize18 c-333">{{item.title}}</a>
 
                   </h3>
 
@@ -296,6 +290,7 @@ export default {
     this.initCourseFirst()
    //一级分类显示
     this.initSubject()
+    
   },
   methods:{
     //1 查询第一页数据
@@ -318,8 +313,103 @@ export default {
        courseApi.getCourseList(page,8,this.searchObj).then(response =>{
         this.data = response.data.data
       })
-    }
+    },
+    //4 点击某个一级分类，查询对应二级分类
+    searchOne(subjectParentId,index){
+      //把传递index值赋值给oneIndex,为了active样式可以生效
+      this.oneIndex = index
+      this.twoIndex = -1
+      this.searchObj.subjectId = ""
+      this.subSubjectList = []
+      //把一级分类点击id值，赋值给searchObj
+      this.searchObj.subjectParentId = subjectParentId
+      //点击某个一级分类进行条件查询
+      this.gotoPage(1)
+        //拿着点击一级分类id和所有一级分类id进行比较
+        //如果id相同，从一级分类里面获取对应二级分类
+        for(let i=0;i<this.subjectNestedList.length;i++){
+          //获取每一个一级分类
+          var oneSubject = this.subjectNestedList[i]
+          //比较id是否相同
+          if(subjectParentId == oneSubject.id){
+            //从一级分类里面获取对应二级分类
+            this.subSubjectList = oneSubject.children
+          }
+        }
+  },
+  //5点击某个二级分类实现查询
+  searchTwo(subjectId,index){
+    //把index赋值,为了样式生效
+    this.twoIndex = index
+    //把二级分类点击id值，赋值给searchObj
+      this.searchObj.subjectId = subjectId
+      //点击某个二级分类进行条件查询
+      this.gotoPage(1)
+  },
+  //6 根据销量排序
+  searchBuyCount(){
+    //设置对应变量值，为了样式生效
+    this.buyCountSort = "1"
+    this.gmtCreateSort=""
+    this.priceSort=""
+
+    //把值赋值到searchObj
+    this.searchObj.buyCountSort = this.buyCountSort
+    this.searchObj.gmtCreateSort = this.gmtCreateSort;
+      this.searchObj.priceSort = this.priceSort;
+      //调用方法查询
+      this.gotoPage(1)
+  },
+  //7最新排序
+  searchGmtCreate(){
+    //设置对应变量值，为了样式生效
+    this.buyCountSort = ""
+    this.gmtCreateSort="1"
+    this.priceSort=""
+
+    //把值赋值到searchObj
+    this.searchObj.buyCountSort = this.buyCountSort
+    this.searchObj.gmtCreateSort = this.gmtCreateSort;
+      this.searchObj.priceSort = this.priceSort;
+      //调用方法查询
+      this.gotoPage(1)
+  },
+  //8价格排序
+  searchPrice(){
+    //设置对应变量值，为了样式生效
+    this.buyCountSort = ""
+    this.gmtCreateSort=""
+    this.priceSort="1"
+
+    //把值赋值到searchObj
+    this.searchObj.buyCountSort = this.buyCountSort
+    this.searchObj.gmtCreateSort = this.gmtCreateSort;
+      this.searchObj.priceSort = this.priceSort;
+      //调用方法查询
+      this.gotoPage(1)
+  }
   }
 };
 
 </script>
+<style scoped>
+
+  .active {
+
+    background: #bdbdbd;
+
+  }
+
+  .hide {
+
+    display: none;
+
+  }
+
+  .show {
+
+    display: block;
+
+  }
+
+</style>

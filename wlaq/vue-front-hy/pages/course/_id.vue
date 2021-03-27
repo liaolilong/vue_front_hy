@@ -12,11 +12,11 @@
 
         \
 
-        <a href="#" title class="c-999 fsize14">课程列表</a>
+        <a href="#" title class="c-999 fsize14">{{courseWebVo.subjectLevelOne}}</a>
 
         \
 
-        <span class="c-333 fsize14">Java精品课程</span>
+        <span class="c-333 fsize14">{{courseWebVo.subjectLevelTwo}}</span>
 
       </section>
 
@@ -26,7 +26,7 @@
 
           <section class="p-h-video-box" id="videoPlay">
 
-            <img src="~/assets/photo/course/1442295581911.jpg" alt="Java精品课程" class="dis c-v-pic">
+            <img :src="courseWebVo.cover" :alt="courseWebVo.title" class="dis c-v-pic">
 
           </section>
 
@@ -38,7 +38,7 @@
 
             <h2 class="hLh30 txtOf mt15">
 
-              <span class="c-fff fsize24">Java精品课程</span>
+              <span class="c-fff fsize24">{{courseWebVo.title}}</span>
 
             </h2>
 
@@ -46,13 +46,13 @@
 
               <span class="c-fff">价格：</span>
 
-              <b class="c-yellow" style="font-size:24px;">￥0.00</b>
+              <b class="c-yellow" style="font-size:24px;">￥{{courseWebVo.price}}</b>
 
             </section>
 
             <section class="c-attr-mt c-attr-undis">
 
-              <span class="c-fff fsize14">主讲： 唐嫣&nbsp;&nbsp;&nbsp;</span>
+              <span class="c-fff fsize14">主讲： {{courseWebVo.teacherName}}&nbsp;&nbsp;&nbsp;</span>
 
             </section>
 
@@ -92,7 +92,7 @@
 
                 <br>
 
-                <h6 class="c-fff f-fM mt10">150</h6>
+                <h6 class="c-fff f-fM mt10">{{courseWebVo.buyCount}}</h6>
 
               </aside>
 
@@ -172,24 +172,8 @@
 
                     <section class="course-txt-body">
 
-                      <p>
-
-                        Java的发展历史，可追溯到1990年。当时Sun&nbsp;Microsystem公司为了发展消费性电子产品而进行了一个名为Green的项目计划。该计划
-
-                        负责人是James&nbsp;Gosling。起初他以C++来写一种内嵌式软件，可以放在烤面包机或PAD等小型电子消费设备里，使得机器更聪明，具有人工智
-
-                        能。但他发现C++并不适合完成这类任务！因为C++常会有使系统失效的程序错误，尤其是内存管理，需要程序设计师记录并管理内存资源。这给设计师们造成
-
-                        极大的负担，并可能产生许多bugs。&nbsp;
-
-                        <br>为了解决所遇到的问题，Gosling决定要发展一种新的语言，来解决C++的潜在性危险问题，这个语言名叫Oak。Oak是一种可移植性语言，也就是一种平台独立语言，能够在各种芯片上运行。
-
-                        <br>1994年，Oak技术日趋成熟，这时网络正开始蓬勃发展。Oak研发小组发现Oak很适合作为一种网络程序语言。因此发展了一个能与Oak配合的浏
-
-                        览器--WebRunner，后更名为HotJava，它证明了Oak是一种能在网络上发展的程序语言。由于Oak商标已被注册，工程师们便想到以自己常
-
-                        享用的咖啡(Java)来重新命名，并于Sun&nbsp;World&nbsp;95中被发表出来。
-
+                      <p v-html="courseWebVo.description">
+                          {{courseWebVo.description}}
                       </p>
 
                     </section>
@@ -218,17 +202,17 @@
 
                           <!-- 文件目录 -->
 
-                          <li class="lh-menu-stair">
+                          <li class="lh-menu-stair" v-for="chapter in chapterVideoList" :key="chapter.id">
 
-                            <a href="javascript: void(0)" title="第一章" class="current-1">
+                            <a href="javascript: void(0)" :title="chapter.title" class="current-1">
 
-                              <em class="lh-menu-i-1 icon18 mr10"></em>第一章
+                              <em class="lh-menu-i-1 icon18 mr10"></em>{{chapter.title}}
 
                             </a>
 
                             <ol class="lh-menu-ol" style="display: block;">
 
-                              <li class="lh-menu-second ml30">
+                              <li class="lh-menu-second ml30" v-for="video in chapter.children" :key="video.id">
 
                                 <a href="#" title>
 
@@ -238,17 +222,7 @@
 
                                   </span>
 
-                                  <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>第一节
-
-                                </a>
-
-                              </li>
-
-                              <li class="lh-menu-second ml30">
-
-                                <a href="#" title class="current-2">
-
-                                  <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>第二节
+                                  <em class="lh-menu-i-2 icon16 mr5">&nbsp;</em>{{video.title}}
 
                                 </a>
 
@@ -300,7 +274,7 @@
 
                       <a href="#">
 
-                        <img src="~/assets/photo/teacher/1442297969808.jpg" width="50" height="50" alt>
+                        <img src="courseWebVo.avater" width="50" height="50" alt>
 
                       </a>
 
@@ -308,13 +282,13 @@
 
                     <section class="hLh30 txtOf">
 
-                      <a class="c-333 fsize16 fl" href="#">周杰伦</a>
+                      <a class="c-333 fsize16 fl" href="#">{{courseWebVo.teacherName}}</a>
 
                     </section>
 
                     <section class="hLh20 txtOf">
 
-                      <span class="c-999">毕业于北京大学数学系</span>
+                      <span class="c-999">{{courseWebVo.intro}}</span>
 
                     </section>
 
@@ -343,7 +317,17 @@
 </template>
 
 <script>
-
-export default {};
+import courseApi from '@/api/course'
+export default {
+  asyncData({params,error}){
+    return courseApi.getCourseInfo(params.id)
+    .then(response =>{
+      return{
+        courseWebVo:response.data.data.courseWebVo,
+        chapterVideoList:response.data.data.chapterVideoList
+      }
+    })
+  }
+};
 
 </script>
