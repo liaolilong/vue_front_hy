@@ -214,7 +214,7 @@
 
                               <li class="lh-menu-second ml30" v-for="video in chapter.children" :key="video.id">
 
-                                <a href="#" title>
+                                <a :href="'/player/'+video.videoSourceId" target="_blank">
 
                                   <span class="fr">
 
